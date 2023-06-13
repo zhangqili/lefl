@@ -1,1 +1,1 @@
-# lefl
+# Light Embedded Framework Library
