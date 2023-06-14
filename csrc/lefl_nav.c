@@ -34,3 +34,39 @@ void lefl_frame_draw(lefl_frame_t* frame)
 {
     frame->pages[frame->index]->page_draw_cb(frame->pages[frame->index]);
 }
+
+void lefl_link_frame_go_home(lefl_link_frame_t* frame)
+{
+    while(frame->current_page->back!=NULL)
+        frame->current_page=frame->current_page->back;
+}
+
+
+void lefl_link_frame_go_forward(lefl_link_frame_t* frame)
+{
+    if(frame->current_page->forward!=NULL)
+        frame->current_page=frame->current_page->forward;
+}
+
+void lefl_link_frame_go_back(lefl_link_frame_t* frame)
+{
+    if(frame->current_page->back!=NULL)
+        frame->current_page=frame->current_page->back;
+}
+
+void lefl_link_frame_navigate(lefl_link_frame_t* frame,lefl_page_t* page)
+{
+    page->back=frame->current_page;
+    frame->current_page->forward=page;
+    frame->current_page=frame->current_page->forward;
+}
+
+void lefl_link_frame_logic(lefl_link_frame_t* frame)
+{
+    frame->current_page->page_logic_cb(frame->current_page);
+}
+
+void lefl_link_frame_draw(lefl_link_frame_t* frame)
+{
+    frame->current_page->page_draw_cb(frame->current_page);
+}

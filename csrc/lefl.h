@@ -6,6 +6,7 @@
 #define LEFL_H_
 
 #include "stdint.h"
+#include "stddef.h"
 
 /*
  * lefl_cursor.c
@@ -71,12 +72,13 @@ typedef struct __lefl_page_t
 {
   void (* page_logic_cb)(struct __lefl_page_t *page);
   void (* page_draw_cb)(struct __lefl_page_t *page);
+  struct __lefl_page_t  *forward;
+  struct __lefl_page_t  *back;
 } lefl_page_t;
 
 typedef struct __lefl_frame_t
 {
   lefl_page_t *pages[LEFL_PAGE_MAX];
-  lefl_page_t *home_page;
   int8_t index;
   int8_t len;
   void (* frame_cb)(struct __lefl_frame_t *frame);
@@ -88,6 +90,19 @@ void lefl_frame_go_home(lefl_frame_t* frame);
 void lefl_frame_navigate(lefl_frame_t* frame,lefl_page_t* page);
 void lefl_frame_logic(lefl_frame_t* frame);
 void lefl_frame_draw(lefl_frame_t* frame);
+
+typedef struct __lefl_link_frame_t
+{
+  lefl_page_t *current_page;
+  void (* link_frame_cb)(struct __lefl_link_frame_t *frame);
+} lefl_link_frame_t;
+
+void lefl_link_frame_go_home(lefl_link_frame_t* frame);
+void lefl_link_frame_go_forward(lefl_link_frame_t* frame);
+void lefl_link_frame_go_back(lefl_link_frame_t* frame);
+void lefl_link_frame_navigate(lefl_link_frame_t* frame,lefl_page_t* page);
+void lefl_link_frame_logic(lefl_link_frame_t* frame);
+void lefl_link_frame_draw(lefl_link_frame_t* frame);
 
 /*
  * lefl_easing.c
