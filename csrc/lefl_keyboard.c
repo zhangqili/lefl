@@ -1,7 +1,7 @@
 /*
  * lefl_keyboard.c
  */
-#include "ui.h"
+#include "lefl.h"
 char *ansi_104_keymap[6][17] = {
     {"Esc      ", "F1", "F2", "F3", "F4  ", "F5", "F6", "F7", "F8  ", "F9", "F10", "F11", "F12  ", "Prtsc ", "Scroll Lock", "Pause Break"},
     {"`     ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "0 ", "- ", "= ", "Backspace  ", "Insert", "    Home   ", "       PgUp"},
