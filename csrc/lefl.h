@@ -140,7 +140,15 @@ extern "C" {
     void lefl_loop_array_push_back(lefl_loop_array_t* arr, lefl_array_t t);
     lefl_array_t lefl_loop_array_max(lefl_loop_array_t* arr);
 
+    typedef struct __lefl_bit_array_t
+    {
+        int64_t array[4];
+        int16_t len;
+    } lefl_bit_array_t;
 
+    void lefl_bit_array_set_bit(lefl_bit_array_t* arr,int16_t n,bool b);
+    bool lefl_bit_array_get_bit(lefl_bit_array_t* arr,int16_t n);
+    void lefl_bit_array_shift(lefl_bit_array_t* arr,int16_t n);
     /*
      * lefl_input.c
      */
@@ -181,6 +189,7 @@ extern "C" {
     } lefl_analog_key_t;
     void lefl_analog_key_update(lefl_analog_key_t* key, float value);
     void lefl_analog_key_update_raw(lefl_analog_key_t* key, int16_t value);
+    void lefl_analog_key_update_state(lefl_analog_key_t* key, bool state);
     float lefl_analog_key_normalize(lefl_analog_key_t* key, int16_t value);
     bool lefl_analog_key_is_triggered(lefl_analog_key_t* key);
     void lefl_analog_key_set_range(lefl_analog_key_t* key, float upper, float lower);

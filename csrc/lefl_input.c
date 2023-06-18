@@ -5,11 +5,15 @@
 
 void lefl_key_update(lefl_key_t* key,bool state)
 {
-    if((!key->state)&&state)
+    if((!(key->state))&&state)
     {
-        key->state=state;
         key->trigger=true;
     }
+    if(!state)
+    {
+        key->trigger=false;
+    }
+    key->state=state;
 }
 bool lefl_key_is_triggered(lefl_key_t* key)
 {
@@ -95,6 +99,19 @@ void lefl_analog_key_update(lefl_analog_key_t* key,float value)
 void lefl_analog_key_update_raw(lefl_analog_key_t* key, int16_t value)
 {
     lefl_analog_key_update(key,lefl_analog_key_normalize(key, value));
+}
+
+void lefl_analog_key_update_state(lefl_analog_key_t* key, bool state)
+{
+    if((!(key->state))&&state)
+    {
+        key->trigger=true;
+    }
+    if(!state)
+    {
+        key->trigger=false;
+    }
+    key->state=state;
 }
 
 float lefl_analog_key_normalize(lefl_analog_key_t* key, int16_t value)
