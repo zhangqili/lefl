@@ -36,3 +36,44 @@ lefl_array_t lefl_loop_array_max(lefl_loop_array_t *arr)
     }
     return max;
 }
+
+void lefl_bit_array_set(lefl_bit_array_t* arr, int16_t n,bool b)
+{
+    if(n>=0&&n<arr->len)
+        arr->list[n/LEFL_BIT_ARRAY_UNIT_WIDTH]&=
+            (~(1<<(n%LEFL_BIT_ARRAY_UNIT_WIDTH)));
+        arr->list[n/LEFL_BIT_ARRAY_UNIT_WIDTH]|=
+            (b<<(n%LEFL_BIT_ARRAY_UNIT_WIDTH));
+}
+
+bool lefl_bit_array_get(lefl_bit_array_t* arr, int16_t n)
+{
+    if(n>=0&&n<arr->len)
+        return 1&
+            (arr->list[n/LEFL_BIT_ARRAY_UNIT_WIDTH]>>(n%LEFL_BIT_ARRAY_UNIT_WIDTH));
+    else
+        return false;
+}
+
+void lefl_bit_array_shift(lefl_bit_array_t* arr, int16_t n)
+{
+    if(n>0)
+    {
+        for(int16_t i=(arr->len-1)/LEFL_BIT_ARRAY_UNIT_WIDTH;i>0;i--)
+        {
+            arr->list[i]<<=n;
+            arr->list[i]|=(arr->list[i-1]>>(LEFL_BIT_ARRAY_UNIT_WIDTH-n));
+        }
+        arr->list[0]<<=n;
+    }
+    if(n<0)
+    {
+        for(int16_t i=0;i<(arr->len-1)/LEFL_BIT_ARRAY_UNIT_WIDTH;i++)
+        {
+            arr->list[i]>>=(-n);
+            arr->list[i]|=arr->list[i+1]<<(LEFL_BIT_ARRAY_UNIT_WIDTH-(-n));
+        }
+        arr->list[(arr->len-1)/LEFL_BIT_ARRAY_UNIT_WIDTH]>>=(-n);
+    }
+}
+

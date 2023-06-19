@@ -140,15 +140,17 @@ extern "C" {
     void lefl_loop_array_push_back(lefl_loop_array_t* arr, lefl_array_t t);
     lefl_array_t lefl_loop_array_max(lefl_loop_array_t* arr);
 
+    typedef uint64_t lefl_bit_array_unit_t;
+#define LEFL_BIT_ARRAY_UNIT_WIDTH (sizeof(lefl_bit_array_unit_t)*8)
     typedef struct __lefl_bit_array_t
     {
-        int64_t array[4];
+        lefl_bit_array_unit_t list[4];
         int16_t len;
     } lefl_bit_array_t;
 
-    void lefl_bit_array_set_bit(lefl_bit_array_t* arr,int16_t n,bool b);
-    bool lefl_bit_array_get_bit(lefl_bit_array_t* arr,int16_t n);
-    void lefl_bit_array_shift(lefl_bit_array_t* arr,int16_t n);
+    void lefl_bit_array_set(lefl_bit_array_t* arr, int16_t n,bool b);
+    bool lefl_bit_array_get(lefl_bit_array_t* arr, int16_t n);
+    void lefl_bit_array_shift(lefl_bit_array_t* arr, int16_t n);
     /*
      * lefl_input.c
      */
