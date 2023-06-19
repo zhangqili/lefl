@@ -28,11 +28,22 @@ bool lefl_key_is_triggered(lefl_key_t* key)
     }
 }
 
-void lefl_analog_key_update(lefl_analog_key_t* key,float value)
+void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
 {
     switch(key->mode)
     {
-    case LEFL_KEY_NORMAL_MODE:
+    case LEFL_KEY_DIGITAL_MODE:
+        if((!(key->state))&&value)
+        {
+            key->trigger=true;
+        }
+        if(!value)
+        {
+            key->trigger=false;
+        }
+        key->state=value;
+        break;
+    case LEFL_KEY_ANALOG_NORMAL_MODE:
         key->value=value;
         if(key->value-key->schmitt_parameter>key->trigger_distance)
         {
@@ -43,7 +54,7 @@ void lefl_analog_key_update(lefl_analog_key_t* key,float value)
             key->state=false;
         }
         break;
-    case LEFL_KEY_RAPID_MODE:
+    case LEFL_KEY_ANALOG_RAPID_MODE:
         key->value=value;
         if (key->state)
         {
@@ -71,7 +82,7 @@ void lefl_analog_key_update(lefl_analog_key_t* key,float value)
                     key->minimum = key->value;
             }
         }
-        if (key->value < 0.0)
+        if (key->value <= 0.0)
         {
             key->state = false;
             key->minimum = 0.0;
@@ -82,7 +93,7 @@ void lefl_analog_key_update(lefl_analog_key_t* key,float value)
             key->maximum = 1.0;
         }
         break;
-    case LEFL_KEY_SPEED_MODE:
+    case LEFL_KEY_ANALOG_SPEED_MODE:
         if(value-key->value > key->trigger_speed)
         {
             key->state=true;
@@ -96,12 +107,15 @@ void lefl_analog_key_update(lefl_analog_key_t* key,float value)
     }
 }
 
-void lefl_analog_key_update_raw(lefl_analog_key_t* key, int16_t value)
+void lefl_advanced_key_update_raw(lefl_advanced_key_t* key, int16_t value)
 {
-    lefl_analog_key_update(key,lefl_analog_key_normalize(key, value));
+    if(key->mode==LEFL_KEY_DIGITAL_MODE)
+        lefl_advanced_key_update(key,value);
+    else
+        lefl_advanced_key_update(key,lefl_advanced_key_normalize(key, value));
 }
 
-void lefl_analog_key_update_state(lefl_analog_key_t* key, bool state)
+void lefl_advanced_key_update_state(lefl_advanced_key_t* key, bool state)
 {
     if((!(key->state))&&state)
     {
@@ -114,14 +128,14 @@ void lefl_analog_key_update_state(lefl_analog_key_t* key, bool state)
     key->state=state;
 }
 
-float lefl_analog_key_normalize(lefl_analog_key_t* key, int16_t value)
+float lefl_advanced_key_normalize(lefl_advanced_key_t* key, int16_t value)
 {
     float x;
     x=(key->upper_bound-key->upper_deadzone -value)/(key->range);
     return x;
 }
 
-bool lefl_analog_key_is_triggered(lefl_analog_key_t* key)
+bool lefl_advanced_key_is_triggered(lefl_advanced_key_t* key)
 {
     if(key->trigger)
     {
@@ -134,14 +148,14 @@ bool lefl_analog_key_is_triggered(lefl_analog_key_t* key)
     }
 }
 
-void lefl_analog_key_set_range(lefl_analog_key_t* key,float upper,float lower)
+void lefl_advanced_key_set_range(lefl_advanced_key_t* key,float upper,float lower)
 {
     key->upper_bound=upper;
     key->lower_bound=lower;
     key->range = key->upper_bound - key->lower_bound;
 }
 
-void lefl_analog_key_set_deadzone(lefl_analog_key_t* key,float upper,float lower)
+void lefl_advanced_key_set_deadzone(lefl_advanced_key_t* key,float upper,float lower)
 {
     key->upper_deadzone = (key->upper_bound - key->lower_bound)*upper;
     key->lower_deadzone = (key->upper_bound - key->lower_bound)*lower;

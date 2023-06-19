@@ -40,10 +40,12 @@ lefl_array_t lefl_loop_array_max(lefl_loop_array_t *arr)
 void lefl_bit_array_set(lefl_bit_array_t* arr, int16_t n,bool b)
 {
     if(n>=0&&n<arr->len)
+    {
         arr->list[n/LEFL_BIT_ARRAY_UNIT_WIDTH]&=
             (~(1<<(n%LEFL_BIT_ARRAY_UNIT_WIDTH)));
         arr->list[n/LEFL_BIT_ARRAY_UNIT_WIDTH]|=
             (b<<(n%LEFL_BIT_ARRAY_UNIT_WIDTH));
+    }
 }
 
 bool lefl_bit_array_get(lefl_bit_array_t* arr, int16_t n)
