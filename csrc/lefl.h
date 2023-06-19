@@ -165,12 +165,13 @@ extern "C" {
 
     typedef enum
     {
-        LEFL_KEY_NORMAL_MODE,
-        LEFL_KEY_RAPID_MODE,
-        LEFL_KEY_SPEED_MODE
+        LEFL_KEY_DIGITAL_MODE,
+        LEFL_KEY_ANALOG_NORMAL_MODE,
+        LEFL_KEY_ANALOG_RAPID_MODE,
+        LEFL_KEY_ANALOG_SPEED_MODE
     } lefl_key_mode_t;
 
-    typedef struct __lefl_analog_key_t
+    typedef struct __lefl_advanced_key_t
     {
         float value;
         float trigger_distance;
@@ -188,14 +189,14 @@ extern "C" {
         bool trigger;
         bool state;
         lefl_key_mode_t mode;
-    } lefl_analog_key_t;
-    void lefl_analog_key_update(lefl_analog_key_t* key, float value);
-    void lefl_analog_key_update_raw(lefl_analog_key_t* key, int16_t value);
-    void lefl_analog_key_update_state(lefl_analog_key_t* key, bool state);
-    float lefl_analog_key_normalize(lefl_analog_key_t* key, int16_t value);
-    bool lefl_analog_key_is_triggered(lefl_analog_key_t* key);
-    void lefl_analog_key_set_range(lefl_analog_key_t* key, float upper, float lower);
-    void lefl_analog_key_set_deadzone(lefl_analog_key_t* key, float upper, float lower);
+    } lefl_advanced_key_t;
+    void lefl_advanced_key_update(lefl_advanced_key_t* key, float value);
+    void lefl_advanced_key_update_raw(lefl_advanced_key_t* key, int16_t value);
+    void lefl_advanced_key_update_state(lefl_advanced_key_t* key, bool state);
+    float lefl_advanced_key_normalize(lefl_advanced_key_t* key, int16_t value);
+    bool lefl_advanced_key_is_triggered(lefl_advanced_key_t* key);
+    void lefl_advanced_key_set_range(lefl_advanced_key_t* key, float upper, float lower);
+    void lefl_advanced_key_set_deadzone(lefl_advanced_key_t* key, float upper, float lower);
 
 #ifdef __cplusplus
 }
