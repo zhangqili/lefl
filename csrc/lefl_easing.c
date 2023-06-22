@@ -6,7 +6,7 @@
 
 void lefl_easing_pid(float *f,float target)
 {
-    if(!(fabs(*f-target)<=0.1))
+    if(!(fabs(*f-target)<=0.5))
         *f=*f+LEFL_ANIMATION_SPEED*(target-*f);
     else
         *f=target;

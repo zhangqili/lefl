@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+#define _USE_MATH_DEFINES
 #include "stdint.h"
 #include "stddef.h"
 #include "stdbool.h"
@@ -49,7 +50,7 @@ extern "C" {
 
     void lefl_menu_index_increase(lefl_menu_t* menu, int8_t delta);
     void lefl_menu_click(lefl_menu_t* menu);
-    void lefl_menu_update_selection(lefl_menu_t* menu);
+    void fezui_menu_update_selection(lefl_menu_t* menu);
     void lefl_menu_draw(lefl_menu_t* menu);
 
     /*
@@ -111,10 +112,53 @@ extern "C" {
     void lefl_link_frame_draw(lefl_link_frame_t* frame);
 
     /*
-     * lefl_easing.c
+     * lefl_animation.c
      */
-#define LEFL_ANIMATION_SPEED       (1/5.0)
+
+    typedef float lefl_animation_float_t;
+
+    typedef enum
+    {
+        LEFL_ANIMATION_EASE_IN,
+        LEFL_ANIMATION_EASE_OUT,
+        LEFL_ANIMATION_EASE_INOUT,
+    } lefl_animation_mode_t;
+
+    typedef struct __lefl_animation_t
+    {
+        uint16_t tick;
+        uint16_t end;
+        lefl_animation_float_t from;
+        lefl_animation_float_t to;
+        lefl_animation_float_t *target;
+        lefl_animation_mode_t mode;
+        lefl_animation_float_t parameter1;
+        lefl_animation_float_t parameter2;
+        lefl_animation_float_t (*easing_func)(lefl_animation_float_t f, ...);
+    }lefl_animation_t;
+
+    void lefl_animation_init(lefl_animation_t *a,
+            lefl_animation_float_t (*easing_func)(lefl_animation_float_t f, ...),
+            lefl_animation_mode_t mode);
+    void lefl_animation_bind(lefl_animation_t *a,lefl_animation_float_t *f);
+    void lefl_animation_begin(lefl_animation_t *a);
+    void lefl_animation_tick(lefl_animation_t *a);
+    lefl_animation_float_t lefl_animation_normalize(lefl_animation_t *a);
+
+#define LEFL_ANIMATION_SPEED       (1/15.0)
     void lefl_easing_pid(float* f, float target);
+    lefl_animation_float_t lefl_animation_sine_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_pow_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_quad_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_cubic_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_quart_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_quint_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_expo_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_circ_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_back_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_elastic_ease(lefl_animation_float_t f, ...);
+    lefl_animation_float_t lefl_animation_bounce_ease(lefl_animation_float_t f, ...);
+
 
     /*
      * lefl_datastruct.c

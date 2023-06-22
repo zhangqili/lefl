@@ -59,6 +59,7 @@ void lefl_link_frame_navigate(lefl_link_frame_t* frame,lefl_page_t* page)
     page->back=frame->current_page;
     frame->current_page->forward=page;
     frame->current_page=frame->current_page->forward;
+    //frame->current_page->page_load_cb(frame->current_page);
 }
 
 void lefl_link_frame_logic(lefl_link_frame_t* frame)
