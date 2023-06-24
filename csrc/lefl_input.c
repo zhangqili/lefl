@@ -8,6 +8,8 @@ void lefl_key_update(lefl_key_t* key,bool state)
     if((!(key->state))&&state)
     {
         key->trigger=true;
+        if(key->key_cb!=NULL)
+            key->key_cb(key);
     }
     if(!state)
     {
@@ -35,6 +37,8 @@ void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
     case LEFL_KEY_DIGITAL_MODE:
         if((!(key->state))&&value)
         {
+            if(key->state==false&&key->key_cb!=NULL)
+                key->key_cb(key);
             key->trigger=true;
         }
         if(!value)
@@ -47,6 +51,8 @@ void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
         key->value=value;
         if(key->value-key->schmitt_parameter>key->trigger_distance)
         {
+            if(key->state==false&&key->key_cb!=NULL)
+                key->key_cb(key);
             key->state=true;
         }
         if(key->value+key->schmitt_parameter<key->trigger_distance)
@@ -74,6 +80,8 @@ void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
             if (key->value - key->minimum - key->schmitt_parameter >= key->trigger_distance)
             {
                 key->maximum = key->value;
+                if(key->state==false&&key->key_cb!=NULL)
+                    key->key_cb(key);
                 key->state = true;
             }
             if (key->maximum - key->value - key->schmitt_parameter >= key->release_distance)
@@ -89,6 +97,8 @@ void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
         }
         if (key->value >= 1.0)
         {
+            if(key->state==false&&key->key_cb!=NULL)
+                key->key_cb(key);
             key->state = true;
             key->maximum = 1.0;
         }
@@ -96,6 +106,8 @@ void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
     case LEFL_KEY_ANALOG_SPEED_MODE:
         if(value-key->value > key->trigger_speed)
         {
+            if(key->state==false&&key->key_cb!=NULL)
+                key->key_cb(key);
             key->state=true;
         }
         if(value-key->value < key->release_speed)
@@ -109,6 +121,7 @@ void lefl_advanced_key_update(lefl_advanced_key_t* key,float value)
 
 void lefl_advanced_key_update_raw(lefl_advanced_key_t* key, int16_t value)
 {
+    key->raw=value;
     if(key->mode==LEFL_KEY_DIGITAL_MODE)
         lefl_advanced_key_update(key,value);
     else

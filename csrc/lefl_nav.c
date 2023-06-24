@@ -46,12 +46,16 @@ void lefl_link_frame_go_forward(lefl_link_frame_t* frame)
 {
     if(frame->current_page->forward!=NULL)
         frame->current_page=frame->current_page->forward;
+    if(frame->current_page->page_load_cb!=NULL)
+        frame->current_page->page_load_cb(frame->current_page);
 }
 
 void lefl_link_frame_go_back(lefl_link_frame_t* frame)
 {
     if(frame->current_page->back!=NULL)
         frame->current_page=frame->current_page->back;
+    if(frame->current_page->page_load_cb!=NULL)
+        frame->current_page->page_load_cb(frame->current_page);
 }
 
 void lefl_link_frame_navigate(lefl_link_frame_t* frame,lefl_page_t* page)
@@ -59,7 +63,8 @@ void lefl_link_frame_navigate(lefl_link_frame_t* frame,lefl_page_t* page)
     page->back=frame->current_page;
     frame->current_page->forward=page;
     frame->current_page=frame->current_page->forward;
-    //frame->current_page->page_load_cb(frame->current_page);
+    if(frame->current_page->page_load_cb!=NULL)
+        frame->current_page->page_load_cb(frame->current_page);
 }
 
 void lefl_link_frame_logic(lefl_link_frame_t* frame)

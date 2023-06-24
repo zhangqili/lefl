@@ -17,7 +17,8 @@ void lefl_menu_index_increase(lefl_menu_t *menu, int8_t delta)
 }
 void lefl_menu_click(lefl_menu_t *menu)
 {
-    menu->menu_cb(menu);
+    if(menu->menu_cb!=NULL)
+        menu->menu_cb(menu);
 }
 
 

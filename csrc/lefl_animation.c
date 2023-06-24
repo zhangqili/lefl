@@ -45,7 +45,9 @@
 #define iszero(x)  (fabs(x)<10.0*FLOAT_EPS)
 #define isone(x)  (fabs(x-1.0)<10.0*FLOAT_EPS)
 
-void lefl_animation_init(lefl_animation_t *a,
+#pragma GCC diagnostic ignored "-Wvarargs"
+
+void lefl_animation_init(lefl_animation_base_t *a,
         lefl_animation_float_t (*easing_func)(lefl_animation_float_t f, ...),
         lefl_animation_mode_t mode)
 {
@@ -53,19 +55,19 @@ void lefl_animation_init(lefl_animation_t *a,
     a->mode = mode;
 }
 
-void lefl_animation_bind(lefl_animation_t *a,lefl_animation_float_t *f)
+void lefl_animation_bind(lefl_animation_base_t *a,lefl_animation_float_t *f)
 {
     a->target=f;
 }
-void lefl_animation_begin(lefl_animation_t *a)
+void lefl_animation_begin(lefl_animation_base_t *a)
 {
     a->tick=0;
 }
-void lefl_animation_tick(lefl_animation_t *a)
+lefl_animation_float_t lefl_animation_tick(lefl_animation_base_t *a)
 {
     if(a->tick>=a->end)
     {
-        return;
+        return 0.0;
     }
     else
     {
@@ -75,23 +77,24 @@ void lefl_animation_tick(lefl_animation_t *a)
     switch (a->mode)
     {
         case LEFL_ANIMATION_EASE_IN:
-            *(a->target) = (a->to-a->from)*a->easing_func(normalized_time,a->parameter1,a->parameter2);
+            *(a->target) = a->from+(a->to-a->from)*a->easing_func(normalized_time,a->parameter1,a->parameter2);
             break;
         case LEFL_ANIMATION_EASE_OUT:
             // EaseOut is the same as EaseIn, except time is reversed & the result is flipped.
-            *(a->target) = (a->to-a->from)*(1.0 - a->easing_func(1.0 - normalized_time,a->parameter1,a->parameter2));
+            *(a->target) = a->from+(a->to-a->from)*(1.0 - a->easing_func(1.0 - normalized_time,a->parameter1,a->parameter2));
             break;
         case LEFL_ANIMATION_EASE_INOUT:
         default:
             // EaseInOut is a combination of EaseIn & EaseOut fit to the 0-1, 0-1 range.
-            *(a->target) =  (a->to-a->from)*((normalized_time < 0.5) ?
+            *(a->target) = a->from+(a->to-a->from)*((normalized_time < 0.5) ?
                    a->easing_func(normalized_time  * 2.0,a->parameter1,a->parameter2) * 0.5 :
                    (1.0 - a->easing_func((1.0 - normalized_time) * 2.0,a->parameter1,a->parameter2)) * 0.5 + 0.5);
             break;
     }
+    return 0.0;
 }
 
-lefl_animation_float_t lefl_animation_normalize(lefl_animation_t *a)
+lefl_animation_float_t lefl_animation_normalize(lefl_animation_base_t *a)
 {
     return (lefl_animation_float_t)a->tick/(lefl_animation_float_t)a->end;
 }

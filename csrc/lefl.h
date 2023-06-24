@@ -15,6 +15,12 @@ extern "C" {
 #include "stdbool.h"
 #include "math.h"
 
+#define lambda(return_type, function_body) \
+({ \
+      return_type $this function_body \
+          $this; \
+})
+
     /*
      * lefl_cursor.c
      */
@@ -79,6 +85,7 @@ extern "C" {
     {
         void (*page_logic_cb)(struct __lefl_page_t* page);
         void (*page_draw_cb)(struct __lefl_page_t* page);
+        void (*page_load_cb)(struct __lefl_page_t* page);
         struct __lefl_page_t* forward;
         struct __lefl_page_t* back;
     } lefl_page_t;
@@ -124,7 +131,7 @@ extern "C" {
         LEFL_ANIMATION_EASE_INOUT,
     } lefl_animation_mode_t;
 
-    typedef struct __lefl_animation_t
+    typedef struct __lefl_animation_base_t
     {
         uint16_t tick;
         uint16_t end;
@@ -135,15 +142,23 @@ extern "C" {
         lefl_animation_float_t parameter1;
         lefl_animation_float_t parameter2;
         lefl_animation_float_t (*easing_func)(lefl_animation_float_t f, ...);
+    }lefl_animation_base_t;
+
+    typedef struct __lefl_animation_t
+    {
+        lefl_animation_base_t *base;
+        lefl_animation_float_t from;
+        lefl_animation_float_t to;
+        lefl_animation_float_t *target;
     }lefl_animation_t;
 
-    void lefl_animation_init(lefl_animation_t *a,
+    void lefl_animation_init(lefl_animation_base_t *a,
             lefl_animation_float_t (*easing_func)(lefl_animation_float_t f, ...),
             lefl_animation_mode_t mode);
-    void lefl_animation_bind(lefl_animation_t *a,lefl_animation_float_t *f);
-    void lefl_animation_begin(lefl_animation_t *a);
-    void lefl_animation_tick(lefl_animation_t *a);
-    lefl_animation_float_t lefl_animation_normalize(lefl_animation_t *a);
+    void lefl_animation_bind(lefl_animation_base_t *a,lefl_animation_float_t *f);
+    void lefl_animation_begin(lefl_animation_base_t *a);
+    lefl_animation_float_t lefl_animation_tick(lefl_animation_base_t *a);
+    lefl_animation_float_t lefl_animation_normalize(lefl_animation_base_t *a);
 
 #define LEFL_ANIMATION_SPEED       (1/15.0)
     void lefl_easing_pid(float* f, float target);
@@ -201,8 +216,10 @@ extern "C" {
 
     typedef struct __lefl_key_t
     {
+        uint16_t id;
         bool state;
         bool trigger;
+        void (*key_cb)(struct __lefl_key_t* key);
     } lefl_key_t;
     void lefl_key_update(lefl_key_t* key, bool state);
     bool lefl_key_is_triggered(lefl_key_t* key);
@@ -217,7 +234,9 @@ extern "C" {
 
     typedef struct __lefl_advanced_key_t
     {
+        uint16_t id;
         float value;
+        float raw;
         float trigger_distance;
         float release_distance;
         float schmitt_parameter;
@@ -233,6 +252,7 @@ extern "C" {
         bool trigger;
         bool state;
         lefl_key_mode_t mode;
+        void (*key_cb)(struct __lefl_advanced_key_t* key);
     } lefl_advanced_key_t;
     void lefl_advanced_key_update(lefl_advanced_key_t* key, float value);
     void lefl_advanced_key_update_raw(lefl_advanced_key_t* key, int16_t value);
@@ -242,6 +262,16 @@ extern "C" {
     void lefl_advanced_key_set_range(lefl_advanced_key_t* key, float upper, float lower);
     void lefl_advanced_key_set_deadzone(lefl_advanced_key_t* key, float upper, float lower);
 
+
+    /*
+     * lefl_color.c
+     */
+    typedef struct __lefl_color_rgb_t
+    {
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+    } lefl_color_rgb_t;
 #ifdef __cplusplus
 }
 #endif
