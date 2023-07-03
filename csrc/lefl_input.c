@@ -144,7 +144,7 @@ void lefl_advanced_key_update_state(lefl_advanced_key_t* key, bool state)
 float lefl_advanced_key_normalize(lefl_advanced_key_t* key, int16_t value)
 {
     float x;
-    x=(key->upper_bound-key->upper_deadzone -value)/(key->range);
+    x=(key->upper_bound-(key->upper_bound - key->lower_bound)*key->upper_deadzone -value)/(key->range);
     return x;
 }
 
@@ -170,7 +170,12 @@ void lefl_advanced_key_set_range(lefl_advanced_key_t* key,float upper,float lowe
 
 void lefl_advanced_key_set_deadzone(lefl_advanced_key_t* key,float upper,float lower)
 {
+    /*
     key->upper_deadzone = (key->upper_bound - key->lower_bound)*upper;
     key->lower_deadzone = (key->upper_bound - key->lower_bound)*lower;
     key->range = (key->upper_bound - key->upper_deadzone) - (key->lower_bound+key->lower_deadzone);
+    */
+    key->upper_deadzone = upper;
+    key->lower_deadzone = lower;
+    key->range = (key->upper_bound - (key->upper_bound - key->lower_bound)*key->upper_deadzone) - (key->lower_bound+(key->upper_bound - key->lower_bound)*key->lower_deadzone);
 }
