@@ -275,6 +275,16 @@ extern "C" {
         uint8_t g;
         uint8_t b;
     } lefl_color_rgb_t;
+
+    typedef struct __lefl_color_hsv_t
+    {
+        uint16_t h;
+        uint8_t s;
+        uint8_t v;
+    } lefl_color_hsv_t;
+
+    void lefl_rgb_to_hsv(lefl_color_hsv_t *hsv, lefl_color_rgb_t *rgb);
+    void lefl_hsv_to_rgb(lefl_color_rgb_t *rgb, lefl_color_hsv_t *hsv);
 #ifdef __cplusplus
 }
 #endif
