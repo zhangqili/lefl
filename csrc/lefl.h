@@ -232,7 +232,6 @@ extern "C" {
         LEFL_KEY_ANALOG_SPEED_MODE
     } lefl_key_mode_t;
 
-
     typedef struct __lefl_advanced_key_t
     {
         uint16_t id;
@@ -258,9 +257,9 @@ extern "C" {
 
     void lefl_advanced_key_init(lefl_advanced_key_t* key);
     void lefl_advanced_key_update(lefl_advanced_key_t* key, float value);
-    void lefl_advanced_key_update_raw(lefl_advanced_key_t* key, int16_t value);
+    void lefl_advanced_key_update_raw(lefl_advanced_key_t* key, float value);
     void lefl_advanced_key_update_state(lefl_advanced_key_t* key, bool state);
-    float lefl_advanced_key_normalize(lefl_advanced_key_t* key, int16_t value);
+    float lefl_advanced_key_normalize(lefl_advanced_key_t* key, float value);
     bool lefl_advanced_key_is_triggered(lefl_advanced_key_t* key);
     void lefl_advanced_key_set_range(lefl_advanced_key_t* key, float upper, float lower);
     void lefl_advanced_key_set_deadzone(lefl_advanced_key_t* key, float upper, float lower);
